@@ -2,4 +2,4 @@ import dotenv from 'dotenv'
 
 dotenv.config()
 
-export const { PORT } = process.env;
+export const { PORT, DEBUG_MODE, DB_URL } = process.env;
