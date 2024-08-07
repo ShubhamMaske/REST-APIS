@@ -1,9 +1,9 @@
 import Joi from "joi";
 import Boom from "@hapi/boom";
-import { User } from "../../models";
+import { User } from "../../models/index.js";
 
 const registerController = {
-    register(req, res, next){
+    async register(req, res, next){
         //logic
 
         // validate the request body

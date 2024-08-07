@@ -1,5 +1,6 @@
-import { DEBUG_MODE } from "../config"
-import { ValidationError } from 'joi'
+import { DEBUG_MODE } from "../config/index.js"
+import pkg from 'joi';
+const { ValidationError } = pkg;
 
 const errorHandler = (err, req, res, next) => {
     let statusCode = 500
