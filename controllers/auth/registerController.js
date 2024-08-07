@@ -1,6 +1,7 @@
 import Joi from "joi";
 import Boom from "@hapi/boom";
 import { User } from "../../models/index.js";
+import bcrypt from 'bcrypt'
 
 const registerController = {
     async register(req, res, next){
@@ -32,7 +33,14 @@ const registerController = {
             throw Boom.internal(err.message)
         }
 
+        const { name, email, password } = req.body
+        const hashPassword = await bcrypt.hash(password, 10)
 
+        try {
+            const user = await User.create({ name, email, password:hashPassword })
+        } catch (err) {
+            console.log("error in creating user", err)
+        }
 
         res.json({msg: "From register route"})
     }
