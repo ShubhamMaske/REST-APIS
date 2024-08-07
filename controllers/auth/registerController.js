@@ -2,6 +2,7 @@ import Joi from "joi";
 import Boom from "@hapi/boom";
 import { User } from "../../models/index.js";
 import bcrypt from 'bcrypt'
+import JwtService from "../../services/JwtService.js";
 
 const registerController = {
     async register(req, res, next){
@@ -36,13 +37,17 @@ const registerController = {
         const { name, email, password } = req.body
         const hashPassword = await bcrypt.hash(password, 10)
 
+        let access_token
+
         try {
             const user = await User.create({ name, email, password:hashPassword })
+            console.log("user -> ", user)
+            access_token = JwtService.sign({ _id: user._id, role: user.role})
         } catch (err) {
             console.log("error in creating user", err)
         }
 
-        res.json({msg: "From register route"})
+        res.json({access_token: access_token})
     }
 }
 
