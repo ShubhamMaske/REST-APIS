@@ -1,8 +1,6 @@
 import Boom from "@hapi/boom"
 import { User } from "../../models/index.js"
 
-
-
 const userController = {
     async me(req, res, next) {
         try {
