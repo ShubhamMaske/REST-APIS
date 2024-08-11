@@ -1,8 +1,9 @@
 import Joi from "joi";
 import Boom from "@hapi/boom";
-import { User } from "../../models/index.js";
+import { User, RefreshToken } from "../../models/index.js";
 import bcrypt from 'bcrypt'
 import JwtService from "../../services/JwtService.js";
+import { JWT_REFRESH_SECRET } from "../../config/index.js";
 
 const loginController = {
     async login(req, res, next){
@@ -35,8 +36,12 @@ const loginController = {
             }
 
             const access_token = JwtService.sign({ _id: user._id, role: user.role})
+            const refresh_token = JwtService.sign({ _id: user._id, role: user.role}, '1y', JWT_REFRESH_SECRET)
 
-            res.json({access_token})
+            // storing refresh token in database
+            await RefreshToken.create({token: refresh_token})
+
+            res.json({access_token, refresh_token})
 
         } catch(err) {
             return next(err)

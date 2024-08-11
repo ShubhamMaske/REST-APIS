@@ -3,6 +3,7 @@ import Boom from "@hapi/boom";
 import { User } from "../../models/index.js";
 import bcrypt from 'bcrypt'
 import JwtService from "../../services/JwtService.js";
+// import { JWT_REFRESH_SECRET } from "../../config/index.js";
 
 const registerController = {
     async register(req, res, next){
@@ -27,17 +28,18 @@ const registerController = {
             const user = await User.exists({email: req.body.email})
 
             if(user){
-                throw Boom.internal('User email already exist')
+                throw Boom.conflict('User email already exist')
             }
 
         } catch(err) {
-            throw Boom.internal(err.message)
+            return next(err)
         }
 
         const { name, email, password } = req.body
         const hashPassword = await bcrypt.hash(password, 10)
 
         let access_token
+        let refresh_token
 
         try {
             const user = await User.create({ name, email, password:hashPassword })
@@ -47,7 +49,7 @@ const registerController = {
             console.log("error in creating user", err)
         }
 
-        res.json({access_token: access_token})
+        res.json({access_token, refresh_token})
     }
 }
 
