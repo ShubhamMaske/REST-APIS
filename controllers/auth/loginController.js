@@ -47,6 +47,16 @@ const loginController = {
             return next(err)
         }
 
+    },
+
+    async logout(req, res, next) {
+        try {
+            await RefreshToken.deleteOne({token: req.body.refresh_token})
+            res.json({"status":1})
+        } catch (err) {
+            console.log(err)
+            return next(new Error("Something went wrong"))
+        }
     }
 }
 
