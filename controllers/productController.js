@@ -111,6 +111,25 @@ const productController = {
     } catch (err) {
       console.log(err)
     }
+  },
+
+  async destroy (req, res, next) {
+    const document = await Product.findOneAndDelete({_id: req.params.id})
+
+    if(!document) {
+      return next(new Error('product not found'))
+    }
+
+    // deleting the image
+    const imagePath = document.image
+    fs.unlink(`${appRoot}/${imagePath}`, (err) => {
+
+      if(err) {
+        return next(new Error('server error, unable to delete image'))
+      }
+    })
+
+    res.json(document)
   }
 }
 
