@@ -130,6 +130,18 @@ const productController = {
     })
 
     res.json(document)
+  },
+
+  async index (req, res, next) {
+    let documents
+    try {
+      // we can use mongoose-pagination library for pagination
+      //we will get only name & price fields along with _id
+      documents = await Product.find().select('name price').sort({_id: -1})
+    } catch (err) {
+      return next(err)
+    }
+    return res.json(documents)
   }
 }
 
